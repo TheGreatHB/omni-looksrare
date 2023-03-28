@@ -1,14 +1,8 @@
 {
-  "name": "@lz-asia/layerzero-foundation",
+  "name": "looksrare-integration",
   "description": "",
-  "keywords": [
-    "layerzero",
-    "lz"
-  ],
-  "homepage": "https://github.com/lz-asia/layerzero-foundation#readme",
-  "bugs": "https://github.com/lz-asia/layerzero-foundation/issues",
   "license": "MIT",
-  "author": "LevX <team@levx.io>",
+  "author": "TheGreatHB <hb@thegreathb.com>",
   "files": [
     "abis",
     "contracts",
@@ -55,6 +49,7 @@
     "fantom-testnet:export": "hardhat --network fantom-testnet export --export exports/fantom-testnet.json",
     "test": "cross-env TS_NODE_TRANSPILE_ONLY=1 hardhat test",
     "test:trace": "cross-env TS_NODE_TRANSPILE_ONLY=1 hardhat test --trace",
+    "test:log": "cross-env TS_NODE_TRANSPILE_ONLY=1 hardhat test --logs",
     "test:coverage": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" hardhat coverage",
     "test:gas": "cross-env REPORT_GAS=true yarn test",
     "prepublish": "rimraf abis artifacts cache coverage docs typechain-types && yarn build"
@@ -72,13 +67,15 @@
   "devDependencies": {
     "@commitlint/cli": "^17.2.0",
     "@commitlint/config-conventional": "^17.2.0",
-    "@nomiclabs/hardhat-ethers": "^2.2.0",
-    "@nomiclabs/hardhat-etherscan": "^3.1.0",
-    "@nomiclabs/hardhat-solhint": "^2.0.0",
-    "@nomiclabs/hardhat-waffle": "^2.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "@nomiclabs/hardhat-solhint": "^3.0.0",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@primitivefi/hardhat-dodoc": "^0.2.3",
     "@typechain/ethers-v5": "^10.1.0",
-    "@typechain/hardhat": "^6.1.0",
+    "@typechain/hardhat": "^6.1.5",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^10.0.0",
     "@types/node": "^18.11.0",
@@ -89,12 +86,12 @@
     "dotenv": "^16.0.0",
     "eslint": "^8.26.0",
     "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.7.0",
-    "hardhat": "^2.12.0",
+    "ethers": "^6.2.3",
+    "hardhat": "^2.13.0",
     "hardhat-abi-exporter": "^2.10.0",
-    "hardhat-deploy": "^0.11.0",
+    "hardhat-deploy": "^0.11.25",
     "hardhat-deploy-ethers": "^0.3.0-beta.13",
-    "hardhat-gas-reporter": "^1.0.0",
+    "hardhat-gas-reporter": "^1.0.9",
     "hardhat-log-remover": "^2.0.0",
     "hardhat-preprocessor": "^0.1.0",
     "hardhat-spdx-license-identifier": "^2.0.0",
@@ -105,13 +102,13 @@
     "prettier-plugin-solidity": "^1.0.0-beta.24",
     "shx": "^0.3.4",
     "sol2uml": "^2.2.6",
-    "solidity-coverage": "^0.8.0",
+    "solidity-coverage": "^0.8.2",
     "ts-generator": "^0.1.0",
     "ts-node": "^10.9.0",
     "typechain": "^8.1.0",
     "typescript": "^4.8.0"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.1"
+    "@openzeppelin/contracts": "^4.8.2"
   }
 }
