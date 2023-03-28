@@ -1,7 +1,8 @@
 import "dotenv/config";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-solhint";
-import "@nomiclabs/hardhat-waffle";
+import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-chai-matchers";
 import "hardhat-abi-exporter";
 import "hardhat-deploy";
 import "hardhat-gas-reporter";
@@ -10,6 +11,7 @@ import "hardhat-watcher";
 import "solidity-coverage";
 import "@primitivefi/hardhat-dodoc";
 import "@typechain/hardhat";
+import "hardhat-tracer";
 
 import { HardhatUserConfig, task } from "hardhat/config";
 
@@ -195,13 +197,12 @@ const config: HardhatUserConfig = {
         eachLine: removeConsoleLog(bre => bre.network.name !== "hardhat" && bre.network.name !== "localhost"),
     },
     solidity: {
-        version: "0.8.17",
+        version: "0.8.19",
         settings: {
             optimizer: {
                 enabled: true,
                 runs: 200,
             },
-            viaIR: true,
         },
     },
     watcher: {
