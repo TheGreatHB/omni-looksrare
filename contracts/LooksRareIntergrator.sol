@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import "./interfaces/ILooksRareIntergrator.sol";
 
-contract LooksRareIntergrator is Ownable, ILooksRareIntergrator {
+contract LooksRareIntergratorV1 is Ownable, ILooksRareIntergrator {
     using SafeERC20 for IERC20;
     using Address for address;
 
