@@ -7,6 +7,11 @@ import "./IStargateRouter.sol";
 import "./IOneInchAggregator.sol";
 import {TokenTransfer, ILooksRareAggregator, IERC20EnabledLooksRareAggregator} from "./ILooksRareAggregator.sol";
 
+error InvalidSwapFunction();
+error SwapFailure();
+error FunctionForOnlyCallstaticUsage();
+error InvalidStargateRouter();
+
 interface ILooksRareIntergrator {
     event SetLooksRareAggregator(ILooksRareAggregator newAddress);
     event SetLooksRareAggregatorWithERC20(IERC20EnabledLooksRareAggregator newAddress);

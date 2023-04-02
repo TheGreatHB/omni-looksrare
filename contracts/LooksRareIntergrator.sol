@@ -66,13 +66,13 @@ contract LooksRareIntergratorV1 is Ownable, ILooksRareIntergrator {
             if (swapData[i].tokenIn != address(0)) {
                 _forceIncreaseAllowance(IERC20(swapData[i].tokenIn), address(oneInchRouter), swapData[i].amountIn);
             }
-            if (!_isValidSwapSelector(bytes4(swapData[i].data))) revert("INVALID_FUCTION");
+            if (!_isValidSwapSelector(bytes4(swapData[i].data))) revert InvalidSwapFunction();
 
             (bool success, ) = address(oneInchRouter).call{
                 value: swapData[i].msgValue,
                 gas: swapData[i].swapGas == 0 ? swapGasLimit : swapData[i].swapGas
             }(swapData[i].data);
-            require(success, "failure");
+            if (!success) revert SwapFailure();
         }
     }
 
@@ -95,7 +95,11 @@ contract LooksRareIntergratorV1 is Ownable, ILooksRareIntergrator {
                     continue;
                 }
             }
-            if (!_isValidSwapSelector(bytes4(swapData[i].data))) revert("INVALID_FUCTION");
+            if (!_isValidSwapSelector(bytes4(swapData[i].data))) {
+                failExists = true;
+                if (isAtomic) break;
+                continue;
+            }
 
             (bool success, ) = address(oneInchRouter).call{
                 value: swapData[i].msgValue,
@@ -114,7 +118,6 @@ contract LooksRareIntergratorV1 is Ownable, ILooksRareIntergrator {
         DstSwapAndExecutionParam calldata dstData
     ) external payable virtual {
         for (uint256 i; i < tokenTransfers.length; i = _inc(i)) {
-            require(tokenTransfers[i].currency != address(0), "INVALID_CURRENCY");
             IERC20(tokenTransfers[i].currency).safeTransferFrom(msg.sender, address(this), tokenTransfers[i].amount);
         }
 
@@ -207,16 +210,44 @@ contract LooksRareIntergratorV1 is Ownable, ILooksRareIntergrator {
         return fee;
     }
 
+    function estimateGas(
+        bytes calldata swapETHtoTokenPayload,
+        uint16 _chainId,
+        bytes calldata _srcAddress,
+        uint256 _nonce,
+        address token,
+        uint256 amountLD,
+        bytes calldata payload
+    ) external payable returns (uint256 gasUsed) {
+        if (msg.sender != address(0)) revert FunctionForOnlyCallstaticUsage();
+
+        address(oneInchRouter).functionCallWithValue(swapETHtoTokenPayload, msg.value);
+
+        uint256 gasLeft = gasleft();
+        _sgReceive(_chainId, _srcAddress, _nonce, token, amountLD, payload);
+        return gasleft() - gasLeft;
+    }
+
     function sgReceive(
+        uint16 _chainId, //srcChainId
+        bytes calldata _srcAddress, //srcBridgeAddress
+        uint256 _nonce, //nonce
+        address token, //tokenReceivedViaSTG
+        uint256 amountLD, //amountOfTokenReceivedViaSTG
+        bytes calldata payload //payload in stargateRouter.swap
+    ) external virtual {
+        if (msg.sender != stargateRouter) revert InvalidStargateRouter();
+        _sgReceive(_chainId, _srcAddress, _nonce, token, amountLD, payload);
+    }
+
+    function _sgReceive(
         uint16, //srcChainId
         bytes calldata, //srcBridgeAddress
         uint256, //nonce
         address token, //tokenReceivedViaSTG
         uint256, //amountOfTokenReceivedViaSTG
         bytes calldata payload //payload in stargateRouter.swap
-    ) external virtual {
-        require(msg.sender == stargateRouter);
-
+    ) internal virtual {
         (
             address refundAddress,
             TokenSwapParam[] memory swapData,
