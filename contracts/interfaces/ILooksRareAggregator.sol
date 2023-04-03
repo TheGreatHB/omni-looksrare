@@ -39,22 +39,22 @@ struct TokenTransfer {
     address currency;
 }
 
-interface ILooksRareAggregator {
-    /**
-     * @param proxy The marketplace proxy's address
-     * @param selector The marketplace proxy's function selector
-     * @param orders Orders to be executed by the marketplace
-     * @param ordersExtraData Extra data for each order, specific for each marketplace
-     * @param extraData Extra data specific for each marketplace
-     */
-    struct TradeData {
-        address proxy;
-        bytes4 selector;
-        BasicOrder[] orders;
-        bytes[] ordersExtraData;
-        bytes extraData;
-    }
+/**
+ * @param proxy The marketplace proxy's address
+ * @param selector The marketplace proxy's function selector
+ * @param orders Orders to be executed by the marketplace
+ * @param ordersExtraData Extra data for each order, specific for each marketplace
+ * @param extraData Extra data specific for each marketplace
+ */
+struct TradeData {
+    address proxy;
+    bytes4 selector;
+    BasicOrder[] orders;
+    bytes[] ordersExtraData;
+    bytes extraData;
+}
 
+interface ILooksRareAggregator {
     /**
      * @notice Execute NFT sweeps in different marketplaces in a
      *         single transaction
@@ -114,7 +114,7 @@ interface IERC20EnabledLooksRareAggregator {
      */
     function execute(
         TokenTransfer[] calldata tokenTransfers,
-        ILooksRareAggregator.TradeData[] calldata tradeData,
+        TradeData[] calldata tradeData,
         address recipient,
         bool isAtomic
     ) external payable;
