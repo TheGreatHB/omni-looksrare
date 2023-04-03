@@ -225,7 +225,7 @@ contract LooksRareIntergratorV1 is Ownable, ILooksRareIntergrator {
 
         uint256 gasLeft = gasleft();
         _sgReceive(_chainId, _srcAddress, _nonce, token, amountLD, payload);
-        return gasleft() - gasLeft;
+        return gasLeft - gasleft();
     }
 
     function sgReceive(
