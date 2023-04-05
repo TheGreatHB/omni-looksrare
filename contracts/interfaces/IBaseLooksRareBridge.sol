@@ -7,6 +7,7 @@ import {TokenTransfer, TradeData, ILooksRareAggregator, IERC20EnabledLooksRareAg
 
 error InvalidSwapFunction();
 error SwapFailure();
+error InvalidCaller();
 
 interface IBaseLooksRareBridge {
     event SetOneInchRouter(IOneInchAggregationRouterV5 newAddress);

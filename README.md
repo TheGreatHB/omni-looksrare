@@ -1,4 +1,4 @@
-# Hardhat Foundation
+# LooksRareBridge
 
 ## License
 
@@ -6,4 +6,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Author
 
-- [LevX](https://twitter.com/LEVXeth/)
+- [TheGreatHB](https://twitter.com/TheGreatHB_/)

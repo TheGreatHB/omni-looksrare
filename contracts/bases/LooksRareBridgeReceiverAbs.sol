@@ -28,10 +28,7 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
     }
 
     // don't throw error in case of revert
-    function _swapInDstChain(
-        TokenSwapParam[] memory swapData,
-        bool isAtomic
-    ) internal virtual returns (bool failExists) {
+    function _swapInDstChain(TokenSwapParam[] memory swapData) internal virtual returns (bool failExists) {
         uint256 length = swapData.length;
         for (uint256 i; i < length; i = _inc(i)) {
             if (Address.isContract(swapData[i].tokenIn)) {
@@ -42,13 +39,11 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
                 );
                 if (!approvalSuccess) {
                     failExists = true;
-                    if (isAtomic) break;
                     continue;
                 }
             }
             if (!_isValidSwapSelector(bytes4(swapData[i].data))) {
                 failExists = true;
-                if (isAtomic) break;
                 continue;
             }
 
@@ -58,7 +53,6 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
             }(swapData[i].data);
             if (!success) {
                 failExists = true;
-                if (isAtomic) break;
             }
         }
     }
@@ -86,6 +80,56 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
         }
     }
 
+    function _executeLooksRareAggregator(address refundAddress, bytes memory looksRareExecutionData) internal {
+        // to avoid revert of decoding, using try catch pattern with an external call of this contract
+        try this.decodeLooksRareExecutionData(looksRareExecutionData) returns (
+            TokenTransfer[] memory tokenTransfers,
+            TradeData[] memory tradeData,
+            address recipient,
+            bool isAtomicPurchase
+        ) {
+            uint256 length = tokenTransfers.length;
+            if (length == 0) {
+                try
+                    looksRareAggregator.execute{value: address(this).balance}(
+                        tokenTransfers,
+                        tradeData,
+                        address(this),
+                        recipient,
+                        isAtomicPurchase
+                    )
+                {} catch {
+                    // TODO in case of failure. at the moment, just refund all tokens.
+                }
+            } else {
+                for (uint256 i; i < length; i = _inc(i)) {
+                    address currency = tokenTransfers[i].currency;
+                    _forceIncreaseAllowanceWORevert(
+                        IERC20(currency),
+                        address(looksRareAggregatorWithERC20),
+                        IERC20(currency).balanceOf(address(this))
+                    );
+                }
+                try
+                    looksRareAggregatorWithERC20.execute{value: address(this).balance}(
+                        tokenTransfers,
+                        tradeData,
+                        recipient,
+                        isAtomicPurchase
+                    )
+                {} catch {
+                    // TODO in case of failure. at the moment, just refund all tokens.
+                }
+
+                for (uint256 i; i < length; i = _inc(i)) {
+                    _returnERC20(tokenTransfers[i].currency, refundAddress);
+                }
+            }
+        } catch {
+            // TODO in case of failure. at the moment, just refund all tokens.
+        }
+    }
+
     function _sgReceive(
         uint16, //srcChainId
         bytes calldata, //srcBridgeAddress
@@ -102,64 +146,25 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
             bytes memory looksRareExecutionData
         ) = abi.decode(payload, (address, TokenSwapParam[], bool, bool, bytes));
 
-        bool isSwapFailed = _swapInDstChain(swapData, isAtomicSwap);
-
-        if (!isSwapFailed || buyNFTsInSwapFailure) {
-            // to avoid revert of decoding, using try catch pattern with an external call of this contract
-            try this.decodeLooksRareExecutionData(looksRareExecutionData) returns (
-                TokenTransfer[] memory tokenTransfers,
-                TradeData[] memory tradeData,
-                address recipient,
-                bool isAtomicPurchase
-            ) {
-                uint256 length = tokenTransfers.length;
-                if (length == 0) {
-                    try
-                        looksRareAggregator.execute{value: address(this).balance}(
-                            tokenTransfers,
-                            tradeData,
-                            address(this),
-                            recipient,
-                            isAtomicPurchase
-                        )
-                    {} catch {
-                        // TODO in case of failure. at the moment, just refund all tokens.
-                    }
-                } else {
-                    for (uint256 i; i < length; i = _inc(i)) {
-                        address currency = tokenTransfers[i].currency;
-                        _forceIncreaseAllowanceWORevert(
-                            IERC20(currency),
-                            address(looksRareAggregatorWithERC20),
-                            IERC20(currency).balanceOf(address(this))
-                        );
-                    }
-                    try
-                        looksRareAggregatorWithERC20.execute{value: address(this).balance}(
-                            tokenTransfers,
-                            tradeData,
-                            recipient,
-                            isAtomicPurchase
-                        )
-                    {} catch {
-                        // TODO in case of failure. at the moment, just refund all tokens.
-                    }
-
-                    for (uint256 i; i < length; i = _inc(i)) {
-                        _returnERC20(tokenTransfers[i].currency, refundAddress);
-                    }
-                }
+        if (isAtomicSwap) {
+            try this.swapInDstChain(swapData) {
+                _executeLooksRareAggregator(refundAddress, looksRareExecutionData);
             } catch {
-                // TODO in case of failure. at the moment, just refund all tokens.
+                if (buyNFTsInSwapFailure) _executeLooksRareAggregator(refundAddress, looksRareExecutionData);
+            }
+        } else {
+            bool isSwapFailed = _swapInDstChain(swapData);
+            if (!isSwapFailed || buyNFTsInSwapFailure) {
+                _executeLooksRareAggregator(refundAddress, looksRareExecutionData);
+            }
+            for (uint256 i; i < swapData.length; i = _inc(i)) {
+                if (swapData[i].tokenIn != token && Address.isContract(swapData[i].tokenIn))
+                    _returnERC20(swapData[i].tokenIn, refundAddress);
+                if (swapData[i].tokenOut != token && Address.isContract(swapData[i].tokenOut))
+                    _returnERC20(swapData[i].tokenOut, refundAddress);
             }
         }
 
-        for (uint256 i; i < swapData.length; i = _inc(i)) {
-            if (swapData[i].tokenIn != token && Address.isContract(swapData[i].tokenIn))
-                _returnERC20(swapData[i].tokenIn, refundAddress);
-            if (swapData[i].tokenOut != token && Address.isContract(swapData[i].tokenOut))
-                _returnERC20(swapData[i].tokenOut, refundAddress);
-        }
         _returnERC20(token, refundAddress);
         _returnETH(refundAddress);
 
@@ -176,6 +181,29 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
     ) external virtual {
         if (msg.sender != stargateRouter) revert InvalidStargateRouter();
         _sgReceive(_chainId, _srcAddress, _nonce, token, amountLD, payload);
+    }
+
+    function swapInDstChain(TokenSwapParam[] calldata swapData) external virtual {
+        if (msg.sender != address(this)) revert InvalidCaller();
+
+        uint256 length = swapData.length;
+        for (uint256 i; i < length; i = _inc(i)) {
+            if (Address.isContract(swapData[i].tokenIn)) {
+                _forceIncreaseAllowanceWORevert(
+                    IERC20(swapData[i].tokenIn),
+                    address(oneInchRouter),
+                    swapData[i].amountIn
+                );
+            }
+
+            if (!_isValidSwapSelector(bytes4(swapData[i].data))) revert InvalidSwapFunction();
+
+            (bool success, ) = address(oneInchRouter).call{
+                value: swapData[i].msgValue,
+                gas: swapData[i].swapGas == 0 ? swapGasLimit : swapData[i].swapGas
+            }(swapData[i].data);
+            if (!success) revert SwapFailure();
+        }
     }
 
     function estimateGas(
