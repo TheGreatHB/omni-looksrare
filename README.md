@@ -1,6 +1,8 @@
 # LooksRareBridge
 
-LooksRareBridge is an EVM smart contract application that allows users to buy NFTs from LooksRare on the Ethereum mainnet using assets on a source chain (srcChain). The application uses Stargate dapp from LayerZero to facilitate cross-chain transactions and supports both ERC-721 and ERC-1155 NFT standards.
+## Summury
+
+LooksRareBridge is an EVM smart contract application that allows users to buy NFTs from LooksRare on the Ethereum mainnet using assets on a source chain (srcChain). The application uses Stargate dapp from LayerZero to facilitate cross-chain transactions and supports both ERC-721 and ERC-1155 NFT standards. Although the destination chain (dstChain) doesn't necessarily need to be Ethereum mainnet, at the moment, LooksRare only supports Ethereum mainnet.
 
 ## Features
 
