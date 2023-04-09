@@ -8,23 +8,12 @@ abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRar
     using SafeERC20 for IERC20;
     using Address for address;
 
-    ILooksRareAggregator public looksRareAggregator;
-    IERC20EnabledLooksRareAggregator public looksRareAggregatorWithERC20;
+    ILooksRareAggregator public immutable looksRareAggregator;
+    IERC20EnabledLooksRareAggregator public immutable looksRareAggregatorWithERC20;
 
     constructor(address _looksRareAggregator, address _looksRareAggregatorWithERC20) {
         looksRareAggregator = ILooksRareAggregator(_looksRareAggregator);
         looksRareAggregatorWithERC20 = IERC20EnabledLooksRareAggregator(_looksRareAggregatorWithERC20);
-    }
-
-    // ownership functions
-    function setLooksRareAggregator(ILooksRareAggregator newAddress) external onlyOwner {
-        looksRareAggregator = newAddress;
-        emit SetLooksRareAggregator(newAddress);
-    }
-
-    function setLooksRareAggregatorWithERC20(IERC20EnabledLooksRareAggregator newAddress) external onlyOwner {
-        looksRareAggregatorWithERC20 = newAddress;
-        emit SetLooksRareAggregatorWithERC20(newAddress);
     }
 
     // don't throw error in case of revert

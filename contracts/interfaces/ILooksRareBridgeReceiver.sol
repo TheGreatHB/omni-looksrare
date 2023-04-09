@@ -7,9 +7,6 @@ error FunctionForOnlyCallstaticUsage();
 error InvalidStargateRouter();
 
 interface ILooksRareBridgeReceiver is IBaseLooksRareBridge {
-    event SetLooksRareAggregator(ILooksRareAggregator newAddress);
-    event SetLooksRareAggregatorWithERC20(IERC20EnabledLooksRareAggregator newAddress);
-
     // event ReceiveMsgForLooksRareExecution();
 
     function looksRareAggregator() external view returns (ILooksRareAggregator);

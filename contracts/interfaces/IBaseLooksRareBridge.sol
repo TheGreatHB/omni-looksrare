@@ -10,7 +10,6 @@ error SwapFailure();
 error InvalidCaller();
 
 interface IBaseLooksRareBridge {
-    event SetOneInchRouter(IOneInchAggregationRouterV5 newAddress);
     event SetOneInchSwapGasLimit(uint256 newGasLimit);
 
     struct TokenSwapParam {

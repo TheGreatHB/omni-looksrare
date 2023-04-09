@@ -11,7 +11,7 @@ contract BaseLooksRareBridge is Ownable, IBaseLooksRareBridge {
     using Address for address;
 
     address public immutable stargateRouter;
-    IOneInchAggregationRouterV5 public oneInchRouter;
+    IOneInchAggregationRouterV5 public immutable oneInchRouter;
 
     uint256 public swapGasLimit;
 
@@ -23,12 +23,6 @@ contract BaseLooksRareBridge is Ownable, IBaseLooksRareBridge {
     }
 
     receive() external payable {}
-
-    // ownership functions
-    function setOneInchRouter(IOneInchAggregationRouterV5 newAddress) external onlyOwner {
-        oneInchRouter = newAddress;
-        emit SetOneInchRouter(newAddress);
-    }
 
     /**
      * @dev TheGreatHB
