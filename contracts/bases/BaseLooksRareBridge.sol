@@ -26,13 +26,17 @@ contract BaseLooksRareBridge is Ownable, IBaseLooksRareBridge {
 
     /**
      * @dev TheGreatHB
-     * I analyzed about 9000 transactions whose selector is one of swap, unoswap, uniswapV3Swap, or clipperSwap. About 75% of them used less than 200_000 gas. and about 15% of them used between 200_000 and 300_000 gas. only 10% used more than 300_000.
+     * I analyzed around 9,000 transactions with the selector being one of swap, unoswap, uniswapV3Swap, or clipperSwap. Approximately 75% of these transactions used less than 200,000 gas, while about 15% consumed between 200,000 and 300,000 gas. Only 10% of the transactions used more than 300,000 gas.
      */
     function setOneInchSwapGasLimit(uint256 newGasLimit) external onlyOwner {
         swapGasLimit = newGasLimit;
         emit SetOneInchSwapGasLimit(newGasLimit);
     }
 
+    /**
+     * This function checks whether the entered selector is valid.
+     * @param _selector should be one of swap, unoswap, uniswapV3Swap, or clipperSwap in IOneInchAggregationRouterV5.
+     */
     function _isValidSwapSelector(bytes4 _selector) internal pure virtual returns (bool) {
         return (_selector == IOneInchAggregationRouterV5.swap.selector ||
             _selector == IOneInchAggregationRouterV5.unoswap.selector ||
