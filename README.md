@@ -1,6 +1,6 @@
 # OmniLooksRare
 
-## Summury
+## Summary
 
 ![OmniLooksRare Diagram](docs/OmniLooksRare_Diagram.png)
 OmniLooksRare is an EVM smart contract application that allows users to buy NFTs from LooksRare on the Ethereum mainnet using assets on a source chain (srcChain). The application uses Stargate dapp from LayerZero to facilitate cross-chain transactions and supports both ERC-721 and ERC-1155 NFT standards. Although the destination chain (dstChain) doesn't necessarily need to be Ethereum mainnet, at the moment, LooksRare only supports Ethereum mainnet.
@@ -17,7 +17,7 @@ OmniLooksRare is an EVM smart contract application that allows users to buy NFTs
 ## How it works
 
 1. User sends a single transaction on srcChain.
-2. Stargate relayer exchanges tokens and purchases NFTs as needed according to the given data.
+2. Stargate relayer exchanges tokens (if swap data is provided) and purchases NFTs.
 3. NFTs are sent to the target wallet on dstChain.
 
 ## Error Handling
@@ -26,7 +26,9 @@ OmniLooksRare is an EVM smart contract application that allows users to buy NFTs
 2. If there is no error on srcChain but an error occurs on dstChain, the handling depends on the type of error:
    - For most revert errors, the parameter token sent via Stargate is sent to the destination wallet on dstChain.
    - If there is an error in the swap, the same parameter token is returned or the swapped tokens may be returned depending on the given conditions.
-   - When purchasing multiple NFTs on LooksRare, if only some of them are executed, the remaining balance is sent to the destination wallet along with the successfully purchased NFTs or sent without purchasing all NFTs, depending on the given conditions.
+   - When purchasing multiple NFTs on LooksRare, if only some of them are executable, the behavior depends on the specific conditions (a certain parameter set to true/false):
+     1. Purchase the available NFTs, send the successfully purchased NFTs and any remaining tokens to the destination wallet.
+     2. Do not purchase any NFTs and send all remaining tokens to the destination wallet.
 3. When sending transactions on srcChain and purchasing and receiving NFTs on dstChain, any remaining balance (native token and ERC20 used) is returned to the refund wallet of each chain.
 
 ## Example Scenarios
