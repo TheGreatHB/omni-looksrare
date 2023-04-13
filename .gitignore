@@ -26,7 +26,4 @@ build/
 # ESLint
 .eslintcache
 
-# Dodoc
-docs/**/*
-
 .history/

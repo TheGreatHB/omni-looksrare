@@ -15,7 +15,7 @@ abstract contract OmniLooksRareSenderV1Abs is BaseOmniLooksRare, IOmniLooksRareS
      * tokenOut: This is the token after the swap. There is no guarantee that it will be the same as the actual swapped token. It is used for the subsequent return of any remaining tokens. For native tokens, both address(0) and 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE can be used.
      * msgValue: This is used when swapping native tokens. Enter the amount to be used for the swap call.
      * swapGas: This is the gasLimit used during the swap. If 0 is entered, the contract's swapGasLimit is used. Most simple swaps do not exceed 300,000 gas.
-     * data: This is the msg.data of the swap call. The selector should be one of swap, unoswap, uniswapV3Swap, or clipperSwap.
+     * data: This is the msg.data of the swap call. The selector should be one of swap, unoswap, uniswapV3Swap, or clipperSwap. This can be obtained through the 1inch API. Refer to https://docs.1inch.io/docs/aggregation-protocol/api/swap-params/ for more information.
      */
     function _swapInSrcChain(TokenSwapParam[] calldata swapData) internal virtual {
         for (uint256 i; i < swapData.length; i = _inc(i)) {
@@ -60,7 +60,7 @@ abstract contract OmniLooksRareSenderV1Abs is BaseOmniLooksRare, IOmniLooksRareS
      * dstBuyNFTsInSwapFailure: Determining whether to attempt NFT purchases on the dstChain even if one or more swaps fail.
      * dstLooksRareExecutionData: The msg.data sent to looksRareAggregator / ERC20EnabledLooksRareAggregator on the dstChain to purchase NFTs. It can be obtained using the encodeLooksRareExecutionData function in the OmniLooksRareReceiver.
      */
-    function lzBuyNFT(
+    function omniExecute(
         TokenTransfer[] calldata tokenTransfers,
         TokenSwapParam[] calldata swapData,
         DstSwapAndExecutionParam calldata dstData

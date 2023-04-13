@@ -8,7 +8,7 @@ import "./IBaseOmniLooksRare.sol";
 interface IOmniLooksRareSender is IBaseOmniLooksRare {
     // event SendMsgForLooksRareExecution();
 
-    function lzBuyNFT(
+    function omniExecute(
         TokenTransfer[] calldata tokenTransfers,
         TokenSwapParam[] calldata swapData,
         DstSwapAndExecutionParam calldata dstData
