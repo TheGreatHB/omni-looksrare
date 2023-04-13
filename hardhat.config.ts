@@ -9,7 +9,6 @@ import "hardhat-gas-reporter";
 import "hardhat-spdx-license-identifier";
 import "hardhat-watcher";
 import "solidity-coverage";
-import "@primitivefi/hardhat-dodoc";
 import "@typechain/hardhat";
 import "hardhat-tracer";
 
@@ -38,9 +37,6 @@ const config: HardhatUserConfig = {
         spacing: 2,
     },
     defaultNetwork: "hardhat",
-    dodoc: {
-        exclude: ["hardhat/"],
-    },
     etherscan: {
         apiKey: process.env.ETHERSCAN_API_KEY,
     },
