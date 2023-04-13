@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "./ILooksRareBridgeSender.sol";
+import "./IOmniLooksRareSender.sol";
 import {ILooksRareAggregator, IERC20EnabledLooksRareAggregator} from "./ILooksRareAggregator.sol";
 
 error FunctionForOnlyCallstaticUsage();
 error InvalidStargateRouter();
 
-interface ILooksRareBridge is ILooksRareBridgeSender {
+interface IOmniLooksRare is IOmniLooksRareSender {
     event SetLooksRareAggregator(ILooksRareAggregator newAddress);
     event SetLooksRareAggregatorWithERC20(IERC20EnabledLooksRareAggregator newAddress);
 

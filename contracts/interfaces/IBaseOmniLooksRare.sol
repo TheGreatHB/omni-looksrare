@@ -9,7 +9,7 @@ error InvalidSwapFunction();
 error SwapFailure();
 error InvalidCaller();
 
-interface IBaseLooksRareBridge {
+interface IBaseOmniLooksRare {
     event SetOneInchSwapGasLimit(uint256 newGasLimit);
 
     struct TokenSwapParam {

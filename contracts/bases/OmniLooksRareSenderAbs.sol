@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "../interfaces/ILooksRareBridgeSender.sol";
-import "./BaseLooksRareBridge.sol";
+import "../interfaces/IOmniLooksRareSender.sol";
+import "./BaseOmniLooksRare.sol";
 
-abstract contract LooksRareBridgeSenderV1Abs is BaseLooksRareBridge, ILooksRareBridgeSender {
+abstract contract OmniLooksRareSenderV1Abs is BaseOmniLooksRare, IOmniLooksRareSender {
     using SafeERC20 for IERC20;
 
     /**
@@ -54,11 +54,11 @@ abstract contract LooksRareBridgeSenderV1Abs is BaseLooksRareBridge, ILooksRareB
      * sgSwapParam.dstGasForCall: The amount of gas needed for the sgReceive call on the dstChain. The fee is proportional to this value, so an appropriate value must be entered.
      * sgSwapParam.dstNativeAmount: Used when you want to airdrop the native token of the dstChain to the dstRefundAddress.
      * sgSwapParam.dstRefundAddress: The address to receive the NFTs and remaining tokens on the dstChain.
-     * sgSwapParam.dstTokenReceiver: The LooksRareBridgeReceiver address on the dstChain.
+     * sgSwapParam.dstTokenReceiver: The OmniLooksRareReceiver address on the dstChain.
      * dstSwapData: If swaps are needed on the dstChain, this contains the information.
      * dstIsAtomicSwap: Determining if swaps on the dstChain are atomic.
      * dstBuyNFTsInSwapFailure: Determining whether to attempt NFT purchases on the dstChain even if one or more swaps fail.
-     * dstLooksRareExecutionData: The msg.data sent to looksRareAggregator / ERC20EnabledLooksRareAggregator on the dstChain to purchase NFTs. It can be obtained using the encodeLooksRareExecutionData function in the LooksRareBridgeReceiver.
+     * dstLooksRareExecutionData: The msg.data sent to looksRareAggregator / ERC20EnabledLooksRareAggregator on the dstChain to purchase NFTs. It can be obtained using the encodeLooksRareExecutionData function in the OmniLooksRareReceiver.
      */
     function lzBuyNFT(
         TokenTransfer[] calldata tokenTransfers,

@@ -3,9 +3,9 @@ pragma solidity ^0.8.19;
 
 import "./IStargateFactory.sol";
 import "./IStargatePool.sol";
-import "./IBaseLooksRareBridge.sol";
+import "./IBaseOmniLooksRare.sol";
 
-interface ILooksRareBridgeSender is IBaseLooksRareBridge {
+interface IOmniLooksRareSender is IBaseOmniLooksRare {
     // event SendMsgForLooksRareExecution();
 
     function lzBuyNFT(

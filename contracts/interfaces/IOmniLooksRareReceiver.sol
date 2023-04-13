@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "./IBaseLooksRareBridge.sol";
+import "./IBaseOmniLooksRare.sol";
 
 error FunctionForOnlyCallstaticUsage();
 error InvalidStargateRouter();
 
-interface ILooksRareBridgeReceiver is IBaseLooksRareBridge {
+interface IOmniLooksRareReceiver is IBaseOmniLooksRare {
     // event ReceiveMsgForLooksRareExecution();
 
     function looksRareAggregator() external view returns (ILooksRareAggregator);

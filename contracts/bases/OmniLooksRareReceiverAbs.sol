@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "../interfaces/ILooksRareBridgeReceiver.sol";
-import "./BaseLooksRareBridge.sol";
+import "../interfaces/IOmniLooksRareReceiver.sol";
+import "./BaseOmniLooksRare.sol";
 
-abstract contract LooksRareBridgeReceiverV1Abs is BaseLooksRareBridge, ILooksRareBridgeReceiver {
+abstract contract OmniLooksRareReceiverV1Abs is BaseOmniLooksRare, IOmniLooksRareReceiver {
     using SafeERC20 for IERC20;
     using Address for address;
 
