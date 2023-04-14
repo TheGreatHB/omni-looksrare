@@ -48,9 +48,10 @@ Here are some example scenarios to help illustrate how OmniLooksRare works. All 
 **Assumption:** Alice has BNB, BUSD, and CAKE in her wallet on BSC. She wants to use all these coins to buy NFT_A listed at 0.1 ETH, NFT_B listed at 0.2 WETH, and NFT_C listed at 2000 LOOKS on Ethereum, all at once.
 
 1. Alice sends 1 BNB, 200 BUSD, and 100 CAKE, while paying 0.5 BNB as a fee.
-2. Stargate's relayer receives the fee and forwards Alice's transaction (message) to Ethereum.
-3. 890 USDC arrives on Ethereum, excluding the Stargate fee. 880 USDC of the 890 USDC is converted to 0.11 ETH, 0.22 WETH, and 2100 LOOKS via 1inch.
-4. NFT_A, NFT_B, and NFT_C are purchased with the converted tokens and sent to Alice's Ethereum wallet. The remaining tokens (10 USDC, 0.01 ETH, 0.02 WETH, and 100 LOOKS) are also sent to Alice's Ethereum wallet.
+2. On BSC, 1 BNB is converted to 500 BUSD and 100 CAKE is converted to 200 BUSD, resulting in a total of 900 BUSD to be transferred.
+3. Stargate's relayer receives the fee and forwards Alice's transaction (message) to Ethereum.
+4. 890 USDC arrives on Ethereum, excluding the Stargate fee. 880 USDC of the 890 USDC is converted to 0.11 ETH, 0.22 WETH, and 2100 LOOKS via 1inch.
+5. NFT_A, NFT_B, and NFT_C are purchased with the converted tokens and sent to Alice's Ethereum wallet. The remaining tokens (10 USDC, 0.01 ETH, 0.02 WETH, and 100 LOOKS) are also sent to Alice's Ethereum wallet.
 
 ## License
 
